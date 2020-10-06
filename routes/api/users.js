@@ -5,7 +5,7 @@ const gravatar = require('gravatar');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken')
 const User = require('../../models/User');
-const config = require('config')
+const config = require('config');
 
 router.post('/', [
     check('name', 'name is required')

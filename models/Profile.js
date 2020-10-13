@@ -34,6 +34,7 @@ const ProfileSchema = new mongosse.Schema({
                 required: true
             },
             company: {
+                type: String,
                 required: true
             },
             location: {
@@ -41,10 +42,11 @@ const ProfileSchema = new mongosse.Schema({
                 required: true
             },
             from: {
+                type: Date,
                 required: true
             },
             to: {
-                required: true
+                type: Date
             },
             current: {
                 type: Boolean,

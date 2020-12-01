@@ -37,6 +37,61 @@ router.post('/',
         if (!errors.isEmpty()) {
             return res.status(400).json({ errors: errors.array() })
         }
+        const {
+            company,
+            website,
+            location,
+            status,
+            skills,
+            bio,
+            githubusername,
+            twitter,
+            youtube,
+            facebook,
+            instagram,
+            linkedin
+        } = req.body;
+
+        const profileFileds = {};
+        profileFileds.user = req.body.id;
+        if (company) profileFileds.company = company;
+        if (website) profileFileds.website = website;
+        if (location) profileFileds.location = location;
+        if (status) profileFileds.status = status;
+        if (bio) profileFileds.bio = bio;
+        if (githubusername) profileFileds.githubusername = githubusername;
+        if (skills) {
+            profileFileds.skills = skills.split(',').map(skill => skill.trim())
+        }
+        profileFileds.social = {};
+        if (twitter) profileFileds.social.twitter = twitter
+        if (facebook) profileFileds.social.facebook = facebook
+        if (instagram) profileFileds.social.instagram = instagram
+        if (linkedin) profileFileds.social.linkedin = linkedin
+        if (youtube) profileFileds.social.youtube = youtube
+
+        try {
+            let profile = await Profile.findOne({ user: req.user.id });
+
+            if (profile) {
+                //update Profile
+                profile = await Profile.findByIdAndUpdate(
+                    { user: req.user.id },
+                    { $set: profileFileds },
+                    { new: true }
+                );
+                return res.json(profile);
+            }
+
+            //create Profile
+            profile = new Profile(profileFileds);
+
+            await profile.save();
+            res.json(profile);
+        } catch (err) {
+            console.error(err.message);
+            res.status(500).send('Server Error')
+        }
     }
 );
 module.exports = router; 

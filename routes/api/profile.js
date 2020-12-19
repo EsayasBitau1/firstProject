@@ -94,4 +94,14 @@ router.post('/',
         }
     }
 );
+
+router.get('/', async (req, res) => {
+    try {
+        const profile = await Profile.find().populate('user', ['name', 'avater']);
+        res.json(profile);
+    } catch (err) {
+        console.error(err.massage);
+        res.status(500).send('Server Erorr')
+    }
+})
 module.exports = router; 

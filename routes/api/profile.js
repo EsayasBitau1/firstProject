@@ -53,7 +53,7 @@ router.post('/',
         } = req.body;
 
         const profileFileds = {};
-        profileFileds.user = req.body.id;
+        profileFileds.user = req.user.id;
         if (company) profileFileds.company = company;
         if (website) profileFileds.website = website;
         if (location) profileFileds.location = location;
@@ -72,16 +72,16 @@ router.post('/',
 
         try {
             let profile = await Profile.findOne({ user: req.user.id });
-
             if (profile) {
                 //update Profile
-                profile = await Profile.findByIdAndUpdate(
+                profile = await Profile.findOneAndUpdate(
                     { user: req.user.id },
                     { $set: profileFileds },
                     { new: true }
                 );
                 return res.json(profile);
             }
+
 
             //create Profile
             profile = new Profile(profileFileds);
@@ -97,11 +97,23 @@ router.post('/',
 
 router.get('/', async (req, res) => {
     try {
-        const profile = await Profile.find().populate('user', ['name', 'avater']);
-        res.json(profile);
+        const profiles = await Profile.find().populate('user', ['name', 'avater']);
+        res.json(profiles);
     } catch (err) {
         console.error(err.massage);
-        res.status(500).send('Server Erorr')
+        res.status(500).send('Server Erorr');
     }
-})
+});
+
+router.delete('/', auth, async (req, res) => {
+    try {
+        await Profile.findOneAndRemove({ user: req.user.id });
+        await User.findOneAndRemove({ _id: req.user.id });
+        res.json({ msg: 'User was deleted' });
+    } catch (err) {
+        console.error(err.massage);
+        res.status(500).send('Server Erorr');
+    }
+});
+
 module.exports = router; 

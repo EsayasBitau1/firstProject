@@ -15,7 +15,8 @@ const ProfileSchema = new mongoose.Schema({
         type: String
     },
     status: {
-        type: String
+        type: String,
+        required: true
     },
     skills: {
         type: [String],
@@ -38,8 +39,7 @@ const ProfileSchema = new mongoose.Schema({
                 required: true
             },
             location: {
-                type: Date,
-                required: true
+                type: String
             },
             from: {
                 type: Date,
@@ -72,7 +72,8 @@ const ProfileSchema = new mongoose.Schema({
                 required: true
             },
             from: {
-                type: Date
+                type: Date,
+                required: true
             },
             to: {
                 type: Date
@@ -84,7 +85,6 @@ const ProfileSchema = new mongoose.Schema({
             description: {
                 type: String
             }
-
         }
     ],
     social: {
@@ -102,7 +102,7 @@ const ProfileSchema = new mongoose.Schema({
         },
         instagram: {
             type: String
-        },
+        }
     },
     date: {
         type: Date,
@@ -110,4 +110,4 @@ const ProfileSchema = new mongoose.Schema({
     }
 });
 
-module.exports = Profile = mongoose.model('profile', ProfileSchema);
+module.exports = mongoose.model('profile', ProfileSchema);

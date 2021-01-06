@@ -167,5 +167,86 @@ router.put(
         }
     }
 );
+router.delete('/experience/:exp_id', auth, async (req, res) => {
+    try {
+        const profile = await Profile.findOne({ user: req.user.id })
 
+        const removeIndex = profile.experience.map(item => item.id).indexOf(req.params.exp_id);
+
+        profile.experience.splice(removeIndex, 1);
+
+        await profile.save()
+
+        res.json(profile);
+
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server Error');
+    }
+});
+
+
+router.put(
+    '/education',
+    auth,
+    check('school', 'School is required').notEmpty(),
+    check('degree', 'Degree is required').notEmpty(),
+    check('fieldofstudy', 'Field Of Study is required').notEmpty(),
+    check('from', 'From date is required and needs to be from the past').notEmpty(),
+    async (req, res) => {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({ errors: errors.array() });
+        }
+        const {
+            school,
+            degree,
+            fieldofstudy,
+            from,
+            to,
+            current,
+            description
+        } = req.body;
+
+        const newEduc = {
+            school,
+            degree,
+            fieldofstudy,
+            from,
+            to,
+            current,
+            description
+        }
+
+        try {
+            const profile = await Profile.findOne({ user: req.user.id });
+
+            profile.education.unshift(newEduc);
+
+            await profile.save();
+
+            res.json(profile);
+        } catch (err) {
+            console.error(err.message);
+            res.status(500).send('Server Error');
+        }
+    }
+);
+router.delete('/education/:exp_id', auth, async (req, res) => {
+    try {
+        const profile = await Profile.findOne({ user: req.user.id })
+
+        const removeIndex = profile.education.map(item => item.id).indexOf(req.params.exp_id);
+
+        profile.education.splice(removeIndex, 1);
+
+        await profile.save()
+
+        res.json(profile);
+
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server Error');
+    }
+});
 module.exports = router; 

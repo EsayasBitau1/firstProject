@@ -16,6 +16,7 @@ router.get('/me', auth, async (req, res) => {
         if (!profile) {
             return res.status(400).json({ msg: 'There is no profile for this user' })
         }
+        res.json(profile);
     } catch (err) {
         console.error(err.message);
         res.status(500).send('Server Error');
@@ -83,8 +84,6 @@ router.post('/',
                 );
                 return res.json(profile);
             }
-
-
             //create Profile
             profile = new Profile(profileFileds);
 
@@ -101,7 +100,8 @@ router.get('/', async (req, res) => {
     try {
         const profiles = await Profile.find().populate('user', ['name', 'avater']);
         res.json(profiles);
-    } catch (err) {
+   }
+    catch (err) {
         console.error(err.massage);
         res.status(500).send('Server Erorr');
     }
@@ -130,6 +130,49 @@ router.put(
     check('from', 'From date is required and needs to be from the past')
         .notEmpty(),
     async (req, res) => {
+<<<<<<< HEAD
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+      }
+      const {
+        title,
+        company,
+        location,
+        from,
+        to,
+        current,
+        description
+    } = req.body;
+    
+    const newExp = {
+        title,
+        company,
+        location,
+        from,
+        to,
+        current,
+        description
+    } 
+    
+      try {
+        const profile = await Profile.findOne({ user: req.user.id });
+  
+        profile.experience.unshift(newExp);
+  
+        await profile.save();
+  
+        res.json(profile);
+      } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server Error');
+      }
+    }
+  );
+
+
+
+=======
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
             return res.status(400).json({ errors: errors.array() });
@@ -224,9 +267,20 @@ router.put(
             const profile = await Profile.findOne({ user: req.user.id });
 
             profile.education.unshift(newEduc);
+>>>>>>> 1b005996097406bf87b099bf2e1a7979273ab88e
 
-            await profile.save();
+module.exports = router;
 
+
+
+
+<<<<<<< HEAD
+
+
+
+
+
+=======
             res.json(profile);
         } catch (err) {
             console.error(err.message);
@@ -280,3 +334,4 @@ router.get('/github/:username', (req, res) => {
 
 
 module.exports = router; 
+>>>>>>> 1b005996097406bf87b099bf2e1a7979273ab88e
